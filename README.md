@@ -1,21 +1,11 @@
-# c3r2rbhg
+# Movie Watchlist App 
 
-Quick start:
+## About the app
 
-```
-$ npm install
-$ npm start
-````
+I've made this app to practice JavaScript, CSS and HTML and use external API. This project made as a solo project at scrimba course "Frontend Career Path" 🚀
 
-Head over to https://vitejs.dev/ to learn more about using vite
-## About Scrimba
+- [OMDB API](https://www.omdbapi.com/))
+- [Scrimba](https://scrimba.com/)
+- [You can view app live here](#)
 
-At Scrimba our goal is to create the best possible coding school at the cost of a gym membership! 💜
-If we succeed with this, it will give anyone who wants to become a software developer a realistic shot at succeeding, regardless of where they live and the size of their wallets 🎉
-The Frontend Developer Career Path aims to teach you everything you need to become a Junior Developer, or you could take a deep-dive with one of our advanced courses 🚀
-
-- [Our courses](https://scrimba.com/allcourses)
-- [The Frontend Career Path](https://scrimba.com/learn/frontend)
-- [Become a Scrimba Pro member](https://scrimba.com/pricing)
-
-Happy Coding!
+Thanks for watching!
