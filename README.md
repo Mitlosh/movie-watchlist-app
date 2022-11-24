@@ -6,6 +6,6 @@ I've made this app to practice JavaScript, CSS and HTML and use external API. Th
 
 - [OMDB API](https://www.omdbapi.com/)
 - [Scrimba](https://scrimba.com/)
-- [You can view app live here](#)
+- [You can view app live here](https://wondrous-syrniki-e05c8b.netlify.app/)
 
 Thanks for watching!
