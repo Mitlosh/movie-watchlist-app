@@ -1,67 +1,86 @@
 import Movie from "./Movie.js"
 const apikey = 'a8748325'
+const baseUrl = `https://www.omdbapi.com/?apikey=${apikey}&`
 const form = document.getElementById('search-form')
 const searchInput = document.getElementById('search-input')
-const watchlistArray = []
-let savedFilms = JSON.parse(localStorage.getItem('films')) || []
+const savedMovies = JSON.parse(localStorage.getItem('movies')) || []
 
-form.addEventListener('submit', function(e){
-    e.preventDefault()
-    getSearchList()
-})
+
+let page = document.body.id
+switch (page) {
+    case 'search':
+        getSearchList()
+        break
+    case 'watchlist':
+        getWatchList()
+        break
+}
 
 
 function getSearchList() {
-    fetch (`https://www.omdbapi.com/?apikey=${apikey}&s=${searchInput.value}&`)
-        .then(res => res.json())
-        .then(data => renderMovieListHtml(data) )
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        fetch (`${baseUrl}s=${searchInput.value}&`)
+            .then(res => res.json())
+            .then(data => renderMovieListHtml(data) )
+    })
 }
 
-
 function renderMovieListHtml(data) {
-    let imdbIDArray = data.Search.map(item => item.imdbID)
+    const imdbIDArray = data.Search.map(item => item.imdbID)
     
-    let searchResultsHtml = ``    
-    for (let id of imdbIDArray) {
-        fetch(`https://www.omdbapi.com/?apikey=${apikey}&i=${id}&`)
+    const searchResultsHtml = ``    
+    imdbIDArray.forEach(id => {
+        fetch(`${baseUrl}i=${id}&`)
             .then(res => res.json())
             .then(data =>{                
                 const { Poster, Title, imdbRating, Runtime, Genre, imdbID, Plot } = data 
-                // film = new Movie(data)                       <----- add class
-                // searchResultsHtml += film.getMovieHtml()
-                searchResultsHtml += `
-                    <div class="movie-el">
-                        <img src="${Poster}" alt="poster"/>
-                        <div class="about-movie">
-                            <div class="title-rating">
-                                <h2>${Title}</h2>
-                                <p>⭐${imdbRating}</p>
-                            </div>
-                            <div class="additional-info">
-                                <p>${Runtime}</p>
-                                <p>${Genre}</p>
-                                <button class="add-watchlist-btn" id="${id}">${imdbID}</button>
-                            </div>
-                            <p class="plot">${Plot}</p>
-                        </div>
-                    </div>
-                    `          
-                document.getElementById('main-page').innerHTML = searchResultsHtml
+                film = new Movie(data)
+                searchResultsHtml += film.getMovieHtml()
 
-                let btnsArray = Array.from(document.getElementsByClassName("add-watchlist-btn"))
-                btnsArray.forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        addToWatchlist(btn.id)
-                    })
-                })
-            })
-            
-    }
+                showResult(searchResultsHtml)
+            })   
+    })
+}
+
+function showResult(result) {
+    document.getElementById('main-page').innerHTML = result
+
+    const resultArray = Array.from(document.getElementsByClassName(".add-watchlist-btn"))
+    resultArray.forEach(btn => {
+        btn.addEventListener("click", () => addToWatchlist(btn.id))
+    })
 }
 
 function addToWatchlist(ttId) {
-    watchlistArray.push(ttId)
-    localStorage.setItem("movies", JSON.stringify(watchlistArray))
-    console.log(localStorage)     
+    savedMovies.push(ttId)
+    localStorage.setItem("movies", JSON.stringify(savedMovies))
 }
-// localStorage.clear()
+
+// ______________________________________________________________________
+// Watchlist Page
+
+function getWatchList() {
+    const watchlist = document.getElementById('main-watchlist')
+    let watchlistHtml = ``
+    
+    if(savedMovies === 0 || savedMovies === null) {
+        watchlist.innerHTML = `
+            <div>
+                <h2>Your watchlist is looking a little empty...</h2>
+                <p>Let’s add some movies!</p>
+            </div>
+        `
+    } else {
+        savedMovies.map(movie => {
+            fetch(`${baseUrl}i=${movie}&`)
+                .then(res => res.json())
+                .then(data => {
+                    const film = new Movie(data)                      
+                    watchlistHtml += film.getMovieHtml()
+                    
+                    watchlist.innerHTML = watchlistHtml
+                })
+        })
+    }
+}
