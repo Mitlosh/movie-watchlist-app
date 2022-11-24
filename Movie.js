@@ -1,5 +1,3 @@
-// -----------> Temporarly disabled <-----------
-
 class Movie{
     constructor(data){
         Object.assign(this, data)
@@ -17,7 +15,7 @@ class Movie{
                 <div class="additional-info">
                     <p>${Runtime}</p>
                     <p>${Genre}</p>
-                    <button class="add-watchlist-btn" id="${id}">Watchlist</button>
+                    <button class="add-watchlist-btn" id="${imdbID}">Watchlist</button>
                 </div>
                 <p class="plot">${Plot}</p>
             </div>
