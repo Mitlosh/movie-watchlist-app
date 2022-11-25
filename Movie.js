@@ -2,7 +2,7 @@ class Movie{
     constructor(data){
         Object.assign(this, data)
     }
-    getMovieHtml(){
+    getHtml(){
         const { Poster, Title, imdbRating, Runtime, Genre, imdbID, Plot } = this
         return `
         <div class="movie-el">
