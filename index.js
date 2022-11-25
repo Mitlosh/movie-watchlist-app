@@ -9,15 +9,16 @@ const savedMovies = JSON.parse(localStorage.getItem('movies')) || []
 let page = document.body.id
 switch (page) {
     case 'search':
-        getSearchList()
+        getSearchPage()
         break
+
     case 'watchlist':
-        getWatchList()
+        getWatchlistPage()
         break
 }
 
 
-function getSearchList() {
+function getSearchPage() {
     form.addEventListener('submit', (e) => {
         e.preventDefault()
         fetch (`${baseUrl}s=${searchInput.value}&`)
@@ -28,15 +29,14 @@ function getSearchList() {
 
 function renderMovieListHtml(data) {
     const imdbIDArray = data.Search.map(item => item.imdbID)
-    
-    const searchResultsHtml = ``    
+    const searchResultsHtml = ``
+
     imdbIDArray.forEach(id => {
         fetch(`${baseUrl}i=${id}&`)
             .then(res => res.json())
-            .then(data =>{                
-                const { Poster, Title, imdbRating, Runtime, Genre, imdbID, Plot } = data 
-                film = new Movie(data)
-                searchResultsHtml += film.getMovieHtml()
+            .then(imdbData => {                
+                const film = new Movie(imdbData)
+                searchResultsHtml += film.getHtml()
 
                 showResult(searchResultsHtml)
             })   
@@ -60,7 +60,7 @@ function addToWatchlist(ttId) {
 // ______________________________________________________________________
 // Watchlist Page
 
-function getWatchList() {
+function getWatchlistPage() {
     const watchlist = document.getElementById('main-watchlist')
     let watchlistHtml = ``
     
@@ -75,9 +75,9 @@ function getWatchList() {
         savedMovies.map(movie => {
             fetch(`${baseUrl}i=${movie}&`)
                 .then(res => res.json())
-                .then(data => {
-                    const film = new Movie(data)                      
-                    watchlistHtml += film.getMovieHtml()
+                .then(imdbData => {
+                    const film = new Movie(imdbData)                      
+                    watchlistHtml += film.getHtml()
                     
                     watchlist.innerHTML = watchlistHtml
                 })
