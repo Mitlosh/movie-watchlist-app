@@ -6,13 +6,14 @@ html {
     box-sizing: border-box;
 }
 
-html, body {
+body {
     margin: 0 auto;
     padding: 0;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     max-width: 550px;
     min-height: 100vh;
+    background-color: #fff;
 }
 
 h1 {
@@ -124,6 +125,10 @@ p {
 .add-watchlist-btn:hover,
 .add-watchlist-btn:focus {
     border-bottom: 1px solid black;
+}
+
+.add-watchlist-btn:active {
+    transform: scale(1.1);
 }
 
 .back-to-main {

@@ -23,21 +23,22 @@ function getSearchPage() {
         e.preventDefault()
         fetch (`${baseUrl}s=${searchInput.value}&`)
             .then(res => res.json())
-            .then(data => renderMovieListHtml(data) )
+            .then(data => renderMovieListHtml(data))
     })
 }
 
 function renderMovieListHtml(data) {
     const imdbIDArray = data.Search.map(item => item.imdbID)
-    const searchResultsHtml = ``
+    let searchResultsHtml = ``
 
     imdbIDArray.forEach(id => {
         fetch(`${baseUrl}i=${id}&`)
             .then(res => res.json())
-            .then(imdbData => {                
+            .then(imdbData => {   
+                const btnText = savedMovies.includes(imdbData.imdbID) ? 'Remove' : 'Watchlist'
                 const film = new Movie(imdbData)
-                searchResultsHtml += film.getHtml()
-
+                searchResultsHtml += film.getHtml(btnText)
+                
                 showResult(searchResultsHtml)
             })   
     })
@@ -46,24 +47,30 @@ function renderMovieListHtml(data) {
 function showResult(result) {
     document.getElementById('main-page').innerHTML = result
 
-    const resultArray = Array.from(document.getElementsByClassName(".add-watchlist-btn"))
+    const resultArray = Array.from(document.querySelectorAll(".add-watchlist-btn"))
     resultArray.forEach(btn => {
         btn.addEventListener("click", () => addToWatchlist(btn.id))
     })
 }
 
 function addToWatchlist(ttId) {
-    savedMovies.push(ttId)
-    localStorage.setItem("movies", JSON.stringify(savedMovies))
+    if (!savedMovies.includes(ttId)) {
+        savedMovies.push(ttId)
+        localStorage.setItem("movies", JSON.stringify(savedMovies))
+    } else {
+        savedMovies.pop(ttId)
+        console.log('item removed')
+        console.log(savedMovies)
+        // localStorage.removeItem('ttId')
+    }
 }
 
-// ______________________________________________________________________
-// Watchlist Page
+
 
 function getWatchlistPage() {
     const watchlist = document.getElementById('main-watchlist')
+
     let watchlistHtml = ``
-    
     if(savedMovies === 0 || savedMovies === null) {
         watchlist.innerHTML = `
             <div>
@@ -76,8 +83,9 @@ function getWatchlistPage() {
             fetch(`${baseUrl}i=${movie}&`)
                 .then(res => res.json())
                 .then(imdbData => {
+                    const btnText = savedMovies.includes(imdbData.imdbID) ? 'Remove' : 'Watchlist'
                     const film = new Movie(imdbData)                      
-                    watchlistHtml += film.getHtml()
+                    watchlistHtml += film.getHtml(btnText)
                     
                     watchlist.innerHTML = watchlistHtml
                 })
