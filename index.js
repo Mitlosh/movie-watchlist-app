@@ -31,7 +31,7 @@ function renderMovieListHtml(data) {
     const imdbIDArray = data.Search.map(item => item.imdbID)
     let searchResultsHtml = ``
 
-    imdbIDArray.forEach(id => {
+    imdbIDArray.map(id => {
         fetch(`${baseUrl}i=${id}&`)
             .then(res => res.json())
             .then(imdbData => {   
@@ -44,41 +44,10 @@ function renderMovieListHtml(data) {
     })
 }
 
-function showResult(result) {
-    document.getElementById('main-page').innerHTML = result
-
-    const resultArray = Array.from(document.querySelectorAll(".add-watchlist-btn"))
-    resultArray.forEach(btn => {
-        btn.addEventListener("click", () => addToWatchlist(btn.id))
-    })
-}
-
-function addToWatchlist(ttId) {
-    if (!savedMovies.includes(ttId)) {
-        savedMovies.push(ttId)
-        localStorage.setItem("movies", JSON.stringify(savedMovies))
-    } else {
-        savedMovies.pop(ttId)
-        console.log('item removed')
-        console.log(savedMovies)
-        // localStorage.removeItem('ttId')
-    }
-}
-
-
-
 function getWatchlistPage() {
-    const watchlist = document.getElementById('main-watchlist')
-
     let watchlistHtml = ``
-    if(savedMovies === 0 || savedMovies === null) {
-        watchlist.innerHTML = `
-            <div>
-                <h2>Your watchlist is looking a little empty...</h2>
-                <p>Let’s add some movies!</p>
-            </div>
-        `
-    } else {
+
+    if (savedMovies) {
         savedMovies.map(movie => {
             fetch(`${baseUrl}i=${movie}&`)
                 .then(res => res.json())
@@ -86,9 +55,39 @@ function getWatchlistPage() {
                     const btnText = savedMovies.includes(imdbData.imdbID) ? 'Remove' : 'Watchlist'
                     const film = new Movie(imdbData)                      
                     watchlistHtml += film.getHtml(btnText)
-                    
-                    watchlist.innerHTML = watchlistHtml
+    
+                    showResult(watchlistHtml)
                 })
-        })
+        })   
+    } else {
+        watchlistHtml = `
+            <div class="main-page">
+                <h2>Your watchlist is looking a little empty...</h2>
+                <a href="index.html">Let’s add some movies!</a>
+            </div>
+        `
+        document.getElementById('main-page').innerHTML = watchlistHtml
+    }
+}
+
+
+function showResult(result) {
+    document.getElementById('main-page').innerHTML = result
+
+    const resultArray = Array.from(document.querySelectorAll(".add-watchlist-btn"))
+    resultArray.map(btn => {
+        btn.addEventListener("click", () => toggleWatchlist(btn.id))
+    })
+}
+
+function toggleWatchlist(ttId) {
+    if (!savedMovies.includes(ttId)) {
+        savedMovies.push(ttId)
+        localStorage.setItem("movies", JSON.stringify(savedMovies))
+    } else {
+        const index = savedMovies.indexOf(ttId)
+        if (index > -1) savedMovies.splice(index, 1)
+
+        localStorage.setItem("movies", JSON.stringify(savedMovies))
     }
 }
