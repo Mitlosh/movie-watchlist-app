@@ -47,7 +47,7 @@ function renderMovieListHtml(data) {
 function getWatchlistPage() {
     let watchlistHtml = ``
 
-    if (savedMovies) {
+    if (savedMovies.length) {
         savedMovies.map(movie => {
             fetch(`${baseUrl}i=${movie}&`)
                 .then(res => res.json())
@@ -87,7 +87,7 @@ function toggleWatchlist(ttId) {
     } else {
         const index = savedMovies.indexOf(ttId)
         if (index > -1) savedMovies.splice(index, 1)
-
         localStorage.setItem("movies", JSON.stringify(savedMovies))
+        getWatchlistPage()
     }
 }
