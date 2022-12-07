@@ -85,7 +85,8 @@ function toggleWatchlist(ttId) {
         savedMovies.push(ttId)
         localStorage.setItem("movies", JSON.stringify(savedMovies))
     } else {
-        if (savedMovies.includes(ttId)) savedMovies.splice(ttId, 1)
+        const index = savedMovies.indexOf(ttId)
+        if (index > -1) savedMovies.splice(index, 1)
         localStorage.setItem("movies", JSON.stringify(savedMovies))
     }
 }
