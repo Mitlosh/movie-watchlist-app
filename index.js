@@ -24,6 +24,7 @@ function getSearchPage() {
         fetch (`${baseUrl}s=${searchInput.value}&`)
             .then(res => res.json())
             .then(data => renderMovieListHtml(data))
+            .catch(error => console.error(error))
     })
 }
 
