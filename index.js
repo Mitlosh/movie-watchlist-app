@@ -87,7 +87,7 @@ function showResult(result) {
 }
 
 function toggleWatchlist(ttId) {
-    if (!savedMovies.includes(ttId) && page) {
+    if (!savedMovies.includes(ttId)) {
         savedMovies.push(ttId)
         localStorage.setItem("movies", JSON.stringify(savedMovies))
     } else {
