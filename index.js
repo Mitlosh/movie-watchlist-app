@@ -6,7 +6,7 @@ const searchInput = document.getElementById('search-input')
 const savedMovies = JSON.parse(localStorage.getItem('movies')) || []
 
 
-let page = document.body.id
+const page = document.body.id
 switch (page) {
     case 'search':
         getSearchPage()
@@ -22,7 +22,12 @@ function getSearchPage() {
     form.addEventListener('submit', (e) => {
         e.preventDefault()
         fetch (`${baseUrl}s=${searchInput.value}&`)
-            .then(res => res.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.status);
+                } 
+                return response.json()
+            })
             .then(data => renderMovieListHtml(data))
             .catch(error => console.error(error))
     })
@@ -34,7 +39,7 @@ function renderMovieListHtml(data) {
 
     imdbIDArray.map(id => {
         fetch(`${baseUrl}i=${id}&`)
-            .then(res => res.json())
+            .then(response => response.json())
             .then(imdbData => {   
                 const btnText = savedMovies.includes(imdbData.imdbID) ? 'Remove' : 'Watchlist'
                 const film = new Movie(imdbData)
@@ -82,7 +87,7 @@ function showResult(result) {
 }
 
 function toggleWatchlist(ttId) {
-    if (!savedMovies.includes(ttId)) {
+    if (!savedMovies.includes(ttId) && page) {
         savedMovies.push(ttId)
         localStorage.setItem("movies", JSON.stringify(savedMovies))
     } else {
